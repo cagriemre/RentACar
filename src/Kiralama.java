@@ -13,6 +13,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import com.toedter.calendar.JDateChooser;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JScrollPane;
 
 public class Kiralama extends JFrame {
 
@@ -22,6 +25,7 @@ public class Kiralama extends JFrame {
 	private JTextField textAdSoyad;
 	private JTextField textUcret;
 	private JTextField textGunSayisi;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -44,7 +48,7 @@ public class Kiralama extends JFrame {
 	 */
 	public Kiralama() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 530, 543);
+		setBounds(100, 100, 740, 543);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -53,7 +57,7 @@ public class Kiralama extends JFrame {
 		
 		JPanel panelKiralama = new JPanel();
 		panelKiralama.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null), "Ara\u00E7 Kiralama", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panelKiralama.setBounds(10, 10, 496, 486);
+		panelKiralama.setBounds(10, 10, 334, 486);
 		contentPane.add(panelKiralama);
 		panelKiralama.setLayout(null);
 		
@@ -78,7 +82,7 @@ public class Kiralama extends JFrame {
 		panelKiralama.add(lblToplamUcret);
 		
 		JButton btnKirala = new JButton("Kirala");
-		btnKirala.setBounds(223, 387, 111, 49);
+		btnKirala.setBounds(55, 387, 111, 49);
 		btnKirala.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -123,7 +127,34 @@ public class Kiralama extends JFrame {
 			}
 		});
 		btnIptal.setFont(new Font("Tahoma", Font.BOLD, 15));
-		btnIptal.setBounds(362, 387, 111, 49);
+		btnIptal.setBounds(193, 387, 111, 49);
 		panelKiralama.add(btnIptal);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(354, 10, 360, 486);
+		contentPane.add(scrollPane);
+		
+		table = new JTable();
+		scrollPane.setViewportView(table);
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null},
+				{null, null, null, null, null, null, null},
+			},
+			new String[] {
+				"ID", "Marka", "Model", "Y\u0131l", "Yak\u0131t", "Vites", "G\u00FCnl\u00FCk \u00DCcret"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				Integer.class, String.class, String.class, Integer.class, String.class, String.class, Double.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
 	}
 }

@@ -25,7 +25,7 @@ public class Login extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField textUsername;
+	private JTextField textEmail;
 	private JPasswordField textSifre;
 
 	/**
@@ -67,50 +67,60 @@ public class Login extends JFrame {
 		contentPane.add(panelGiris);
 		panelGiris.setLayout(null);
 		
-		JLabel lblUsername = new JLabel("Kullanıcı Adı");
-		lblUsername.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblUsername.setBounds(115, 89, 147, 45);
-		panelGiris.add(lblUsername);
+		JLabel lblEmail = new JLabel("Email");
+		lblEmail.setFont(new Font("Tahoma", Font.BOLD, 20));
+		lblEmail.setBounds(115, 89, 147, 45);
+		panelGiris.add(lblEmail);
 		
 		JLabel lbsifre = new JLabel("Şifre");
 		lbsifre.setFont(new Font("Tahoma", Font.BOLD, 20));
 		lbsifre.setBounds(115, 158, 147, 45);
 		panelGiris.add(lbsifre);
 		
-		textUsername = new JTextField();
-		textUsername.setFont(new Font("Tahoma", Font.BOLD, 15));
-		textUsername.setBounds(319, 102, 167, 28);
-		panelGiris.add(textUsername);
-		textUsername.setColumns(10);
+		textEmail = new JTextField();
+		textEmail.setFont(new Font("Tahoma", Font.BOLD, 15));
+		textEmail.setBounds(319, 102, 167, 28);
+		panelGiris.add(textEmail);
+		textEmail.setColumns(10);
 		
 		JButton btnGiris = new JButton("Giriş");
 		btnGiris.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String username = textUsername.getText();
-				String sifre = textSifre.getText();
-				String login = "Kullanıcı adı veya şifre yanlış";
-				if(username.equals("emre") && sifre.equals("3131")) {
-					main m = new main();
-					m.setVisible(true);
-					
-				}
-				else {
-					JOptionPane.showMessageDialog(btnGiris,login,"Hatalı giriş",0);
-				}
-				
-				
-				
-				
-				
+				Kiralama k = new Kiralama()	;
+				k.setVisible(true);
 			}
 		});
 		btnGiris.setFont(new Font("Tahoma", Font.BOLD, 25));
-		btnGiris.setBounds(349, 242, 137, 60);
+		btnGiris.setBounds(319, 242, 137, 60);
 		panelGiris.add(btnGiris);
 		
 		textSifre = new JPasswordField();
 		textSifre.setFont(new Font("Tahoma", Font.BOLD, 15));
 		textSifre.setBounds(319, 171, 167, 28);
 		panelGiris.add(textSifre);
+		
+		JButton btnKayitOl = new JButton("Kayıt Ol");
+		btnKayitOl.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				KayitOl k = new KayitOl();
+				k.setVisible(true);
+				
+			}
+		});
+		btnKayitOl.setFont(new Font("Tahoma", Font.BOLD, 25));
+		btnKayitOl.setBounds(485, 242, 137, 60);
+		panelGiris.add(btnKayitOl);
+		
+		JButton btnAdminGirisi = new JButton("Admin Girişi");
+		btnAdminGirisi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AdminGirisi a = new AdminGirisi();
+				a.setVisible(true);
+				
+			}
+		});
+		btnAdminGirisi.setFont(new Font("Tahoma", Font.BOLD, 15));
+		btnAdminGirisi.setBounds(531, 22, 128, 45);
+		panelGiris.add(btnAdminGirisi);
 	}
 }
