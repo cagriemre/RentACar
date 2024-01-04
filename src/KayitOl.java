@@ -5,11 +5,16 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.border.TitledBorder;
 import java.awt.Color;
@@ -18,9 +23,9 @@ public class KayitOl extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
+	private JTextField textAd;
+	private JTextField textSoyad;
+	private JTextField textEmail;
 	private JPasswordField passwordField;
 
 	/**
@@ -77,33 +82,35 @@ public class KayitOl extends JFrame {
 		lblSifre.setBounds(36, 286, 132, 46);
 		panel.add(lblSifre);
 		
-		textField = new JTextField();
-		textField.setFont(new Font("Tahoma", Font.BOLD, 14));
-		textField.setBounds(178, 67, 147, 33);
-		panel.add(textField);
-		textField.setColumns(10);
+		textAd = new JTextField();
+		textAd.setFont(new Font("Tahoma", Font.BOLD, 14));
+		textAd.setBounds(178, 67, 147, 33);
+		panel.add(textAd);
+		textAd.setColumns(10);
 		
-		textField_1 = new JTextField();
-		textField_1.setFont(new Font("Tahoma", Font.BOLD, 14));
-		textField_1.setColumns(10);
-		textField_1.setBounds(178, 143, 147, 33);
-		panel.add(textField_1);
+		textSoyad = new JTextField();
+		textSoyad.setFont(new Font("Tahoma", Font.BOLD, 14));
+		textSoyad.setColumns(10);
+		textSoyad.setBounds(178, 143, 147, 33);
+		panel.add(textSoyad);
 		
-		textField_2 = new JTextField();
-		textField_2.setFont(new Font("Tahoma", Font.BOLD, 14));
-		textField_2.setColumns(10);
-		textField_2.setBounds(178, 221, 147, 33);
-		panel.add(textField_2);
+		textEmail = new JTextField();
+		textEmail.setFont(new Font("Tahoma", Font.BOLD, 14));
+		textEmail.setColumns(10);
+		textEmail.setBounds(178, 221, 147, 33);
+		panel.add(textEmail);
 		
 		passwordField = new JPasswordField();
 		passwordField.setFont(new Font("Tahoma", Font.BOLD, 14));
 		passwordField.setBounds(178, 293, 147, 33);
 		panel.add(passwordField);
 		
-		JButton btnIptal = new JButton("İptal");
+		JButton btnIptal = new JButton("Geri");
 		btnIptal.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				Login l = new Login();
+				l.setVisible(true);
+				setVisible(false);
 				
 			}
 		});
@@ -112,6 +119,33 @@ public class KayitOl extends JFrame {
 		panel.add(btnIptal);
 		
 		JButton btnKayitOl = new JButton("Kayıt Ol");
+		btnKayitOl.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Connection con = null;
+				PreparedStatement statement = null;
+				DbHelper db = new DbHelper();
+				
+				try {
+					con=db.getConnection();
+					String query = "insert into araclar.customer(Ad,Soyad,Email,Sifre)"
+							+ "values (?,?,?,?)";
+					statement = con.prepareStatement(query);
+					statement.setString(1, textAd.getText());
+					statement.setString(2, textSoyad.getText());
+					statement.setString(3, textEmail.getText());
+					statement.setString(4, passwordField.getText());
+					
+					
+					statement.executeUpdate();
+					
+					JOptionPane.showMessageDialog(null, "Kayıt işlemi başarıyla tamamlandı.");
+				}
+				catch(SQLException Exception) {
+					db.ShowError(Exception);
+					
+				}
+			}
+		});
 		btnKayitOl.setFont(new Font("Tahoma", Font.BOLD, 16));
 		btnKayitOl.setBounds(178, 392, 125, 46);
 		panel.add(btnKayitOl);

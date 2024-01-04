@@ -8,13 +8,23 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import javax.swing.border.BevelBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+
+import com.mysql.cj.jdbc.result.ResultSetMetaData;
+
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
 import java.awt.event.ActionEvent;
 
 public class AracKayit extends JFrame {
@@ -45,9 +55,11 @@ public class AracKayit extends JFrame {
 			}
 		});
 	}
-	/**
-	 * Create the frame.
-	 */
+
+    public void Insert() {
+    	
+    
+    }
 	public AracKayit() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 827, 560);
@@ -63,10 +75,10 @@ public class AracKayit extends JFrame {
 		contentPane.add(panelAracKayit);
 		panelAracKayit.setLayout(null);
 		
-		JLabel lblID = new JLabel("Araç ID");
-		lblID.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblID.setBounds(10, 28, 87, 35);
-		panelAracKayit.add(lblID);
+		JLabel lblPlaka = new JLabel("Plaka");
+		lblPlaka.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lblPlaka.setBounds(10, 28, 87, 35);
+		panelAracKayit.add(lblPlaka);
 		
 		JLabel lblMarka = new JLabel("Marka");
 		lblMarka.setFont(new Font("Tahoma", Font.BOLD, 15));
@@ -101,17 +113,45 @@ public class AracKayit extends JFrame {
 		JButton btnEkle = new JButton("Ekle");
 		btnEkle.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String id = textID.getText();
+				
+				Connection con = null;
+				PreparedStatement statement = null;
+				DbHelper db = new DbHelper();
+				
+				try {
+					con=db.getConnection();
+					String query = "insert into araclar.carinfo(Plaka,Marka,Model,Yıl,Yakıt,"
+							+ "Vites,Gunluk_Ucret)"
+							+ "values (?,?,?,?,?,?,?)";
+					statement = con.prepareStatement(query);
+					statement.setString(1, textID.getText());
+					statement.setString(2, textMarka.getText());
+					statement.setString(3, textModel.getText());
+					statement.setString(4, textYakit.getText());
+					statement.setString(5, textVites.getText());
+					statement.setString(6, textYil.getText());
+					statement.setString(7, textUcret.getText());
+					statement.executeUpdate();
+					
+					JOptionPane.showMessageDialog(null, "Araç başarıyla eklendi.");
+				}
+				catch(SQLException Exception) {
+					db.ShowError(Exception);
+					
+				}
+				
+				String Plaka = textID.getText();
 				String marka = textMarka.getText();	
 				String model = textModel.getText();	
 				String yakit = textYakit.getText();	
 				String vites = textVites.getText();	
 				String yil = textYil.getText();	
 				String ucret = textUcret.getText();	
+				}
 				
 				
 				
-			}
+			
 		});
 		btnEkle.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnEkle.setBounds(57, 379, 116, 50);
@@ -120,7 +160,9 @@ public class AracKayit extends JFrame {
 		JButton btnIptal = new JButton("İptal");
 		btnIptal.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				AdminGirisi a = new AdminGirisi();
+				a.setVisible(true);
+				setVisible(false);
 			}
 		});
 		btnIptal.setFont(new Font("Tahoma", Font.BOLD, 20));
@@ -170,12 +212,12 @@ public class AracKayit extends JFrame {
 		panelAracKayit.add(textUcret);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(389, 20, 414, 473);
+		scrollPane.setBounds(389, 20, 414, 390);
 		contentPane.add(scrollPane);
 		
 		tableAracKayit = new JTable();
 		tableAracKayit.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		tableAracKayit.setFont(new Font("Tahoma", Font.BOLD, 13));
+		tableAracKayit.setFont(new Font("Tahoma", Font.BOLD, 10));
 		scrollPane.setViewportView(tableAracKayit);
 		tableAracKayit.setModel(new DefaultTableModel(
 			new Object[][] {
@@ -187,7 +229,7 @@ public class AracKayit extends JFrame {
 				{null, null, null, null, null, null, null},
 			},
 			new String[] {
-				"Ara\u00E7 ID", "Marka", "Model", "Y\u0131l", "Vites", "Yak\u0131t", "Ucret"
+				"Plaka", "Marka", "Model", "Y\u0131l", "Vites", "Yak\u0131t", "Ucret"
 			}
 		) {
 			Class[] columnTypes = new Class[] {
@@ -197,6 +239,56 @@ public class AracKayit extends JFrame {
 				return columnTypes[columnIndex];
 			}
 		});
+		
+		JButton btnNewButton = new JButton("Güncelle");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+int c;
+				
+				DbHelper db = new DbHelper();
+				Connection con = null;
+				PreparedStatement pst = null;
+				
+				try {
+					con=db.getConnection();
+					pst = con.prepareStatement("select * from carinfo");
+					ResultSet rs = pst.executeQuery();
+					
+					ResultSetMetaData rd = (ResultSetMetaData) rs.getMetaData();
+					c = rd.getColumnCount();
+					DefaultTableModel df = (DefaultTableModel)tableAracKayit.getModel();
+					df.setRowCount(0);
+					
+					while(rs.next()) {
+						
+						Vector v2 = new Vector();
+						
+						for(int i = 1 ; i <=c ; i++) {
+							
+							v2.add(rs.getString("Plaka"));
+							v2.add(rs.getString("Marka"));
+							v2.add(rs.getString("Model"));
+							v2.add(rs.getString("Yıl"));
+							v2.add(rs.getString("Yakıt"));
+							v2.add(rs.getString("Vites"));
+							v2.add(rs.getString("Gunluk_Ucret"));
+							
+						}
+						df.addRow(v2);
+						
+						
+					}
+					
+				}
+				 catch(SQLException Exception) {
+					 db.ShowError(Exception);
+				 }
+			}
+		});
+		btnNewButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+		btnNewButton.setBounds(519, 432, 141, 38);
+		contentPane.add(btnNewButton);
 		tableAracKayit.getColumnModel().getColumn(0).setPreferredWidth(83);
 		tableAracKayit.getColumnModel().getColumn(0).setMinWidth(30);
 		tableAracKayit.getColumnModel().getColumn(1).setPreferredWidth(83);

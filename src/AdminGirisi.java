@@ -83,9 +83,10 @@ public class AdminGirisi extends JFrame {
 				String kullaniciAdi = textKullaniciAdi.getText();
 				String sifre = passwordSifre.getText();
 				String login = "Kullanıcı adı veya şifre yanlış";
-				if(kullaniciAdi.equals("emre") && sifre.equals("3131")) {
+				if(kullaniciAdi.equals("emre") && sifre.equals("emre123")) {
 					AracKayit m = new AracKayit();
 					m.setVisible(true);
+					setVisible(false);
 					
 				}
 				else {
@@ -100,7 +101,9 @@ public class AdminGirisi extends JFrame {
 		JButton btnIptal = new JButton("İptal");
 		btnIptal.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				Login l = new Login();
+				l.setVisible(true);
+				setVisible(false);
 				
 			}
 		});

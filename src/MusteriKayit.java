@@ -7,6 +7,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.border.BevelBorder;
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.JTextField;
@@ -14,7 +16,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
+import javax.swing.JPasswordField;
 
 public class MusteriKayit extends JFrame {
 
@@ -24,7 +30,7 @@ public class MusteriKayit extends JFrame {
 	private JTextField textSoyisim;
 	private JTextField textEmail;
 	private JTable tableMusteriKayit;
-	private JTextField textMusteriID;
+	private JPasswordField passwordSifre;
 
 	/**
 	 * Launch the application.
@@ -63,6 +69,29 @@ public class MusteriKayit extends JFrame {
 		JButton btnEkle = new JButton("Ekle");
 		btnEkle.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
+				Connection con = null;
+				PreparedStatement statement = null;
+				DbHelper db = new DbHelper();
+				
+				try {
+					con=db.getConnection();
+					String query = "insert into araclar.customer(Ad,Soyad,Email,Sifre)"
+							+ "values (?,?,?,?)";
+					statement = con.prepareStatement(query);
+					statement.setString(1, textisim.getText());
+					statement.setString(2, textSoyisim.getText());
+					statement.setString(3, textEmail.getText());
+					statement.setString(4, passwordSifre.getText());
+					
+					statement.executeUpdate();
+					
+					JOptionPane.showMessageDialog(null, "Kaydınız başarıyla gerçekleştirilmiştir.");
+				}
+				catch(SQLException Exception) {
+					db.ShowError(Exception);
+					
+				}
 				String isim = textisim.getText();
 				String soyisim = textSoyisim.getText();
 				String email = textEmail.getText();
@@ -77,56 +106,57 @@ public class MusteriKayit extends JFrame {
 		JButton btnIptal = new JButton("İptal");
 		btnIptal.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				dispose();
+				Login l = new Login();
+				l.setVisible(true);
+				setVisible(false);
 			}
 		});
 		btnIptal.setFont(new Font("Tahoma", Font.BOLD, 20));
 		btnIptal.setBounds(213, 379, 116, 50);
 		panelMusteriKayit.add(btnIptal);
 		
-		JLabel lblisim = new JLabel("İsim");
+		JLabel lblisim = new JLabel("Soyisim");
 		lblisim.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblisim.setBounds(32, 116, 100, 50);
 		panelMusteriKayit.add(lblisim);
 		
-		JLabel lblSoyisim = new JLabel("Soyisim");
+		JLabel lblSoyisim = new JLabel("Email");
 		lblSoyisim.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblSoyisim.setBounds(32, 195, 100, 50);
 		panelMusteriKayit.add(lblSoyisim);
 		
-		JLabel lblEmail = new JLabel("Email");
+		JLabel lblEmail = new JLabel("Şifre");
 		lblEmail.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblEmail.setBounds(32, 274, 100, 50);
 		panelMusteriKayit.add(lblEmail);
 		
 		textisim = new JTextField();
 		textisim.setFont(new Font("Tahoma", Font.BOLD, 14));
-		textisim.setBounds(170, 129, 159, 30);
+		textisim.setBounds(170, 55, 159, 30);
 		panelMusteriKayit.add(textisim);
 		textisim.setColumns(10);
 		
 		textSoyisim = new JTextField();
 		textSoyisim.setFont(new Font("Tahoma", Font.BOLD, 14));
 		textSoyisim.setColumns(10);
-		textSoyisim.setBounds(170, 207, 159, 30);
+		textSoyisim.setBounds(170, 128, 159, 30);
 		panelMusteriKayit.add(textSoyisim);
 		
 		textEmail = new JTextField();
 		textEmail.setFont(new Font("Tahoma", Font.BOLD, 14));
 		textEmail.setColumns(10);
-		textEmail.setBounds(170, 286, 159, 30);
+		textEmail.setBounds(170, 207, 159, 30);
 		panelMusteriKayit.add(textEmail);
 		
-		JLabel lblMusteriID = new JLabel("Müşteri ID");
+		JLabel lblMusteriID = new JLabel("İsim");
 		lblMusteriID.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblMusteriID.setBounds(32, 43, 116, 50);
 		panelMusteriKayit.add(lblMusteriID);
 		
-		textMusteriID = new JTextField();
-		textMusteriID.setFont(new Font("Tahoma", Font.BOLD, 14));
-		textMusteriID.setColumns(10);
-		textMusteriID.setBounds(170, 56, 159, 30);
-		panelMusteriKayit.add(textMusteriID);
+		passwordSifre = new JPasswordField();
+		passwordSifre.setFont(new Font("Tahoma", Font.BOLD, 14));
+		passwordSifre.setBounds(170, 288, 159, 30);
+		panelMusteriKayit.add(passwordSifre);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(390, 19, 413, 474);

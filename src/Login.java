@@ -5,6 +5,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 import javax.swing.JDesktopPane;
@@ -48,15 +53,18 @@ public class Login extends JFrame {
 	 * Create the frame.
 	 */
 	public Login() {
+		setForeground(new Color(255, 255, 255));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 827, 560);
 		contentPane = new JPanel();
+		contentPane.setForeground(new Color(255, 255, 255));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		JLabel lblNewLabel_2 = new JLabel("RENT A CAR");
+		lblNewLabel_2.setBackground(new Color(255, 255, 255));
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 60));
 		lblNewLabel_2.setBounds(69, 0, 608, 117);
 		contentPane.add(lblNewLabel_2);
@@ -79,7 +87,7 @@ public class Login extends JFrame {
 		
 		textEmail = new JTextField();
 		textEmail.setFont(new Font("Tahoma", Font.BOLD, 15));
-		textEmail.setBounds(319, 102, 167, 28);
+		textEmail.setBounds(319, 100, 167, 28);
 		panelGiris.add(textEmail);
 		textEmail.setColumns(10);
 		
@@ -87,7 +95,40 @@ public class Login extends JFrame {
 		btnGiris.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Kiralama k = new Kiralama()	;
-				k.setVisible(true);
+				
+				Connection con = null;
+				
+				DbHelper db = new DbHelper();
+				
+				try {
+					
+					con= db.getConnection();
+					Statement stm = con.createStatement();
+					String email = textEmail.getText();
+					@SuppressWarnings("deprecation")
+					String password = textSifre.getText();
+					
+					String query = "select * from customer where Email='"+email+"' and Sifre='"+password+"'";
+					ResultSet rs = stm.executeQuery(query);
+					
+					if(rs.next()) {
+						dispose();
+						Kiralama kiralama = new Kiralama();
+						kiralama.show();
+					}
+					else {
+						JOptionPane.showMessageDialog(btnGiris, "Hatalı e-mail veya şifre.");
+						
+					}
+					
+					
+				}
+				catch(SQLException Exception) {
+					db.ShowError(Exception);
+					
+				}
+				
+				
 			}
 		});
 		btnGiris.setFont(new Font("Tahoma", Font.BOLD, 25));
@@ -104,6 +145,7 @@ public class Login extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				KayitOl k = new KayitOl();
 				k.setVisible(true);
+				setVisible(false);
 				
 			}
 		});
@@ -116,6 +158,7 @@ public class Login extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				AdminGirisi a = new AdminGirisi();
 				a.setVisible(true);
+				setVisible(false);
 				
 			}
 		});
